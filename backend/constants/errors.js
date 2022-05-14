@@ -5,6 +5,7 @@ const errorsMessages = {
   isUserDataError: 'Incorrect password or email',
   isInvalidDataError: 'Invalid Data',
   isResourceError: 'Requested resource not found',
+  isAuthorizationError: 'Authorization required',
 };
 
 const errorsStatus = {

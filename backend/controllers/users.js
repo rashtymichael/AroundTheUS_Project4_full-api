@@ -69,3 +69,7 @@ module.exports.updateUserAvatar = (req, res) => {
         .send({ message: errorsMessages.isServerError });
     });
 };
+
+module.exports.getCurrentUserData = (req, res) => {
+  res.send(req.user);
+};
