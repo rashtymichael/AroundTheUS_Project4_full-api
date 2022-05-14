@@ -1,0 +1,16 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+    "no-underscore-dangle": "off",
+    "prefer-promise-reject-errors": "off",
+    "prefer-destructuring": [
+      "error",
+      {
+        "VariableDeclarator": {
+          "array": false,
+          "object": false
+        }
+      }
+    ],
+  }
+}
