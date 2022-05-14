@@ -1,0 +1,7 @@
+.card__likes-num {
+    max-width: 9px;
+    max-height: 13px;
+    margin-top: 3px;
+    font-size: 13px;
+    line-height: 123%;
+}

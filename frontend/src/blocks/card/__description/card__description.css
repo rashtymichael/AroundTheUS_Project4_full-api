@@ -1,0 +1,8 @@
+.card__description {
+    background-color: white;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 0 0 10px 10px;
+    max-width: 282px;
+}

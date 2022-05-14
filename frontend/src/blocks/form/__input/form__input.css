@@ -1,0 +1,11 @@
+.form__input {
+    padding: 0;
+    border: none;
+    background-image: url(../../../images/input-line.jpg);
+    background-repeat: no-repeat;
+    background-position: bottom;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 121%;
+    min-height: 27px;
+}

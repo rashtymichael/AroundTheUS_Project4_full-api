@@ -1,0 +1,4 @@
+.popup__feedback_type_fail {
+    background: url(../../../../images/FailPopup.svg) no-repeat;
+    background-position: center;
+}

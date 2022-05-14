@@ -1,0 +1,9 @@
+.card__image {
+    border-radius: 10px 10px 0 0;
+    vertical-align: bottom;
+    max-width: 282px;
+    max-height: 282px;
+    min-height: 282px;
+    min-width: 282px;
+    cursor: pointer;
+}

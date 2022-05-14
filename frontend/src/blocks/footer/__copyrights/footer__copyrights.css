@@ -1,0 +1,30 @@
+.footer__copyrights {
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 122%;
+    color: #545454;
+    margin: 68px 0 60px 0;
+}
+
+@media screen and (max-width: 605px) {
+    .footer__copyrights {
+        font-size: 16px;
+        max-width: calc(100% - 25%* 2);
+        margin: 50px auto 36px;
+    }   
+}
+
+@media screen and (max-width: 380px) {
+    .footer__copyrights {
+        font-size: 14px;
+        line-height: 121%;
+    }
+    
+}
+
+@media screen and (max-width: 321px) {
+    .footer__copyrights {
+        max-width: calc(100% - 19px * 2);
+    }   
+}
+

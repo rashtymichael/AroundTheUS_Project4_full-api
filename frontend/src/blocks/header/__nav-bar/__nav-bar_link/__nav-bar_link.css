@@ -1,0 +1,13 @@
+.__nav-bar_link {
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: normal;
+    line-height: 122%;
+    transition: opacity 0.3s linear;
+}
+
+.__nav-bar_link:hover {
+    opacity: 0.6;
+    cursor: pointer;
+}

@@ -1,0 +1,10 @@
+.root__page-container {
+    min-width: calc(100% - 200px * 2);
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 500px) {
+    .root__page-container {
+        min-width: 100%;
+    }
+}

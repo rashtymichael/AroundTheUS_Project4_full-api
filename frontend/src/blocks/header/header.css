@@ -1,0 +1,17 @@
+.header {
+    max-width: 100%;
+    display: flex;
+    margin: 45px auto 0;
+    background-image: url(../../images/Line-header.png);
+    background-repeat: no-repeat;
+    background-position: bottom;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+@media screen and (max-width: 500px) {
+    .header {
+        margin-top: 28px;
+    }
+}
