@@ -7,7 +7,7 @@ module.exports.login = (req, res) => {
   const { email, password } = req.body;
   let returnedUser;
 
-  User.findOne({ email })
+  User.findOne({ email }).select('+password')
     .orFail()
     .then((user) => {
       returnedUser = user;
@@ -24,20 +24,26 @@ module.exports.login = (req, res) => {
       const token = jwt.sign(
         { _id: returnedUser._id },
         'some-secret-key',
-        { expiresIn: '7d' }
+        { expiresIn: '7d' },
       );
 
-      res.send({ token: token });
+      return res.send({ token });
     })
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError' || err.name === 'incorrectPasswordError') {
+      if (err.name === 'DocumentNotFoundError') {
         return res
           .status(errorsStatus.authenticationError)
-          .send(errorsMessages.isUserDataError);
+          .send({ message: errorsMessages.isUserDataError });
+      }
+
+      if (err.name === 'incorrectPasswordError') {
+        return res
+          .status(errorsStatus.authenticationError)
+          .send({ message: err.message });
       }
 
       return res
         .status(errorsStatus.defaultError)
         .send({ message: errorsMessages.isServerError });
-    })
+    });
 };

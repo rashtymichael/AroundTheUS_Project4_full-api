@@ -20,20 +20,38 @@ module.exports.createNewCard = (req, res) => {
 };
 
 module.exports.deleteCardById = (req, res) => {
-  const cardCreatorId = req.params.id;
+  const cardId = req.params.id;
 
-  Card.findByIdAndDelete(cardCreatorId)
+  Card.findById(cardId)
     .orFail()
+    .then((card) => {
+      if (card.owner.toString() !== req.user._id) {
+        const unAuthorizedError = new Error(errorsMessages.isAuthorizationError);
+        unAuthorizedError.name = 'unAuthorizedError';
+
+        return Promise.reject(unAuthorizedError);
+      }
+
+      return Card.findByIdAndDelete(cardId);
+    })
     .then((card) => { res.json(card); })
     .catch((err) => {
       if (err.name === 'DocumentNotFoundError') {
         return res
           .status(errorsStatus.notFoundError)
           .send({ message: errorsMessages.isCardIdError });
-      } if (err.name === 'CastError') {
+      }
+
+      if (err.name === 'CastError') {
         return res
           .status(errorsStatus.invalidDataError)
           .send({ message: errorsMessages.isInvalidDataError });
+      }
+
+      if (err.name === 'unAuthorizedError') {
+        return res
+          .status(errorsStatus.unAuthorizedError)
+          .send({ message: err.message });
       }
 
       return res
