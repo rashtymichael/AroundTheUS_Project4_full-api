@@ -1,5 +1,7 @@
 const cardsRouter = require('./cards');
 const usersRouter = require('./users');
+const signUpRouter = require('./signup');
+const signInRouter = require('./signin');
 const { errorsMessages, errorsStatus } = require('../constants/errors');
 
 const doesAdressExist = (req, res) => {
@@ -15,5 +17,5 @@ const addTemporaryUserId = (req, res, next) => {
 };
 
 module.exports = {
-  routes: [addTemporaryUserId, cardsRouter, usersRouter, doesAdressExist],
+  routes: [addTemporaryUserId, cardsRouter, usersRouter, signInRouter, signUpRouter, doesAdressExist],
 };
