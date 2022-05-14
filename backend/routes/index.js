@@ -8,14 +8,7 @@ const doesAdressExist = (req, res) => {
   res.status(errorsStatus.notFoundError).send({ message: errorsMessages.isResourceError });
 };
 
-const addTemporaryUserId = (req, res, next) => {
-  req.user = {
-    _id: '624454c612124331f48a1081',
-  };
-
-  next();
-};
-
 module.exports = {
-  routes: [addTemporaryUserId, cardsRouter, usersRouter, signInRouter, signUpRouter, doesAdressExist],
+  unAuthRoutes: [signInRouter, signUpRouter],
+  authRoutes: [cardsRouter, usersRouter, doesAdressExist],
 };

@@ -10,6 +10,7 @@ const errorsMessages = {
 
 const errorsStatus = {
   authenticationError: 401,
+  unAuthorizedError: 403,
   notFoundError: 404,
   invalidDataError: 400,
   defaultError: 500,

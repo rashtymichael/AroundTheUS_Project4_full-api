@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     return res
-      .status(errorsStatus.authenticationError)
+      .status(errorsStatus.unAuthorizedError)
       .send({ message: errorsMessages.isAuthorizationError });
   }
 
