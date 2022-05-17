@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
-const { errorsMessages, errorsStatus } = require('../constants/errors');
+const { errorsMessages } = require('../constants/errors');
+const InvalidDataError = require('../errors/InvalidDataError');
 
-module.exports.createNewUser = (req, res) => {
+module.exports.createNewUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -14,15 +15,14 @@ module.exports.createNewUser = (req, res) => {
       })
         .then((user) => { res.json(user); })
         .catch((err) => {
+          let error;
+
           if (err.name === 'ValidationError') {
-            return res
-              .status(errorsStatus.invalidDataError)
-              .send({ message: errorsMessages.isInvalidDataError });
+            error = new InvalidDataError(errorsMessages.isInvalidDataError);
           }
 
-          return res
-            .status(errorsStatus.defaultError)
-            .send({ message: errorsMessages.isServerError });
+          next(error || err);
         });
-    });
+    })
+    .catch(next);
 };

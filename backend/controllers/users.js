@@ -1,26 +1,26 @@
 const User = require('../models/userModel');
-const { errorsMessages, errorsStatus } = require('../constants/errors');
+const { errorsMessages } = require('../constants/errors');
+const NotFoundError = require('../errors/NotFoundError');
+const { checkUpdateUserProfileErrors } = require('../helpers/errors');
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
   const userId = req.params.id;
 
   User.findById(userId)
     .orFail()
     .then((user) => { res.json(user); })
     .catch((err) => {
+      let error;
+
       if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(errorsStatus.notFoundError)
-          .send({ message: errorsMessages.isUserIdError });
+        error = new NotFoundError(errorsMessages.isUserIdError);
       }
 
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   const userId = req.user._id;
 
@@ -28,23 +28,13 @@ module.exports.updateUser = (req, res) => {
     .orFail()
     .then((modifiedUser) => { res.json(modifiedUser); })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res
-          .status(errorsStatus.invalidDataError)
-          .send({ message: errorsMessages.isInvalidDataError });
-      } if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(errorsStatus.notFoundError)
-          .send({ message: errorsMessages.isCardIdError });
-      }
+      const error = checkUpdateUserProfileErrors(err);
 
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const userId = req.user._id;
 
@@ -52,21 +42,9 @@ module.exports.updateUserAvatar = (req, res) => {
     .orFail()
     .then((modifiedAvatar) => { res.json(modifiedAvatar); })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res
-          .status(errorsStatus.invalidDataError)
-          .send({ message: errorsMessages.isInvalidDataError });
-      }
+      const error = checkUpdateUserProfileErrors(err);
 
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(errorsStatus.notFoundError)
-          .send({ message: errorsMessages.isCardIdError });
-      }
-
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };
 

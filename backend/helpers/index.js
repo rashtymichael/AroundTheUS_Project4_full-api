@@ -1,12 +1,8 @@
-const { errorsStatus, errorsMessages } = require('../constants/errors');
-
 function findData(model) {
-  return (req, res) => {
+  return (req, res, next) => {
     model.find({})
       .then((data) => { res.json(data); })
-      .catch(() => {
-        res.status(errorsStatus.defaultError).send({ message: errorsMessages.isServerError });
-      });
+      .catch(next);
   };
 }
 

@@ -1,9 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-const { errorsMessages, errorsStatus } = require('../constants/errors');
+const { errorsMessages } = require('../constants/errors');
+const AuthenticationError = require('../errors/AuthenticationError');
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   let returnedUser;
 
@@ -15,10 +16,7 @@ module.exports.login = (req, res) => {
     })
     .then((matched) => {
       if (!matched) {
-        const incorrectPasswordError = new Error(errorsMessages.isUserDataError);
-        incorrectPasswordError.name = 'incorrectPasswordError';
-
-        return Promise.reject(incorrectPasswordError);
+        throw new AuthenticationError(errorsMessages.isAuthorizationError);
       }
 
       const token = jwt.sign(
@@ -30,20 +28,12 @@ module.exports.login = (req, res) => {
       return res.send({ token });
     })
     .catch((err) => {
+      let error;
+
       if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(errorsStatus.authenticationError)
-          .send({ message: errorsMessages.isUserDataError });
+        error = new AuthenticationError(errorsMessages.isUserDataError);
       }
 
-      if (err.name === 'incorrectPasswordError') {
-        return res
-          .status(errorsStatus.authenticationError)
-          .send({ message: err.message });
-      }
-
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };

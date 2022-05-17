@@ -1,107 +1,67 @@
 const Card = require('../models/cardsModel');
-const { errorsMessages, errorsStatus } = require('../constants/errors');
+const { errorsMessages } = require('../constants/errors');
+const InvalidDataError = require('../errors/InvalidDataError');
+const UnAuthorizedError = require('../errors/UnAuthorizedError');
+const { checkCardErrors } = require('../helpers/errors');
 
-module.exports.createNewCard = (req, res) => {
+module.exports.createNewCard = (req, res, next) => {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => { res.json(card); })
     .catch((err) => {
+      let error;
+
       if (err.name === 'ValidationError') {
-        return res
-          .status(errorsStatus.invalidDataError)
-          .send({ message: errorsMessages.isInvalidData });
+        error = new InvalidDataError(errorsMessages.isInvalidDataError);
       }
 
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };
 
-module.exports.deleteCardById = (req, res) => {
+module.exports.deleteCardById = (req, res, next) => {
   const cardId = req.params.id;
 
   Card.findById(cardId)
     .orFail()
     .then((card) => {
       if (card.owner.toString() !== req.user._id) {
-        const unAuthorizedError = new Error(errorsMessages.isAuthorizationError);
-        unAuthorizedError.name = 'unAuthorizedError';
-
-        return Promise.reject(unAuthorizedError);
+        throw new UnAuthorizedError(errorsMessages.isAuthorizationError);
       }
 
       return Card.findByIdAndDelete(cardId);
     })
     .then((card) => { res.json(card); })
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(errorsStatus.notFoundError)
-          .send({ message: errorsMessages.isCardIdError });
-      }
+      const error = checkCardErrors(err);
 
-      if (err.name === 'CastError') {
-        return res
-          .status(errorsStatus.invalidDataError)
-          .send({ message: errorsMessages.isInvalidDataError });
-      }
-
-      if (err.name === 'unAuthorizedError') {
-        return res
-          .status(errorsStatus.unAuthorizedError)
-          .send({ message: err.message });
-      }
-
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   const cardId = req.params.cardId;
 
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .orFail()
     .then((updatedCardLikes) => { res.json(updatedCardLikes); })
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(errorsStatus.notFoundError)
-          .send({ message: errorsMessages.isCardIdError });
-      } if (err.name === 'CastError') {
-        return res
-          .status(errorsStatus.invalidDataError)
-          .send({ message: errorsMessages.isInvalidDataError });
-      }
+      const error = checkCardErrors(err);
 
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };
 
-module.exports.disLikeCard = (req, res) => {
+module.exports.disLikeCard = (req, res, next) => {
   const cardId = req.params.cardId;
 
   Card.findByIdAndUpdate(cardId, { $pull: { likes: req.user._id } }, { new: true })
     .orFail()
     .then((updatedCardLikes) => { res.json(updatedCardLikes); })
     .catch((err) => {
-      if (err.name === 'DocumentNotFoundError') {
-        return res
-          .status(errorsStatus.notFoundError)
-          .send({ message: errorsMessages.isCardIdError });
-      } if (err.name === 'CastError') {
-        return res
-          .status(errorsStatus.invalidDataError)
-          .send({ message: errorsMessages.isInvalidDataError });
-      }
+      const error = checkCardErrors(err);
 
-      return res
-        .status(errorsStatus.defaultError)
-        .send({ message: errorsMessages.isServerError });
+      next(error || err);
     });
 };

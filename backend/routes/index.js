@@ -1,11 +1,12 @@
 const cardsRouter = require('./cards');
 const usersRouter = require('./users');
-const signUpRouter = require('./signup');
-const signInRouter = require('./signin');
-const { errorsMessages, errorsStatus } = require('../constants/errors');
+const signUpRouter = require('./signUp');
+const signInRouter = require('./signIn');
+const { errorsMessages } = require('../constants/errors');
+const NotFoundError = require('../errors/NotFoundError');
 
-const doesAdressExist = (req, res) => {
-  res.status(errorsStatus.notFoundError).send({ message: errorsMessages.isResourceError });
+const doesAdressExist = (req, res, next) => {
+  next(new NotFoundError(errorsMessages.isResourceError));
 };
 
 module.exports = {
