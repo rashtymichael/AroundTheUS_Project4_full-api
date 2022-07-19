@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
 const { unAuthRoutes, authRoutes } = require('./routes');
 const { mongoServer } = require('./utils');
 const auth = require('./middleware/auth');
@@ -17,6 +18,7 @@ app.use(unAuthRoutes);
 app.use(auth);
 app.use(authRoutes);
 
+app.use(errors());
 app.use(centralErrorHandler);
 
 app.listen(PORT, () => {
