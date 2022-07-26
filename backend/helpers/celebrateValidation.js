@@ -6,13 +6,13 @@ const validateUrl = (value, helpers) => {
     return value;
   }
   return helpers.error('string.uri');
-}
+};
 
 const validateEmail = (value, helpers) => {
   if (isEmail(value)) {
     return value;
   }
   return helpers.error('string.email');
-}
+};
 
 module.exports = { validateUrl, validateEmail };

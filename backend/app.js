@@ -6,7 +6,7 @@ const { unAuthRoutes, authRoutes } = require('./routes');
 const { mongoServer } = require('./utils');
 const auth = require('./middleware/auth');
 const centralErrorHandler = require('./middleware/errorHandler');
-const { requestLogger, errorLogger } = require('./middleware/Logger');
+const { requestLogger, errorLogger } = require('./middleware/logger');
 
 const { PORT = 3000 } = process.env;
 const app = express();
